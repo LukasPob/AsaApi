@@ -777,6 +777,7 @@ struct APrimalStructure : APrimalTargetableActor
     int GetDefaultDestinationID() { return NativeCall<int>(this, "APrimalStructure.GetDefaultDestinationID()"); }
     UStaticMeshComponent* GetPaintingStaticMesh() { return NativeCall<UStaticMeshComponent*>(this, "APrimalStructure.GetPaintingStaticMesh()"); }
     bool IsValidForSnappingFrom(APrimalStructure* OtherStructure) { return NativeCall<bool, APrimalStructure*>(this, "APrimalStructure.IsValidForSnappingFrom(APrimalStructure*)", OtherStructure); }
+    static int BPGetStructureID(APrimalStructure* PrimalStructure) { return NativeCall<int, APrimalStructure*>(nullptr, "APrimalStructure.BPGetStructureID(APrimalStructure*)", PrimalStructure); }
     bool IsValidSnapPointFrom(APrimalStructure* ParentStructure, int MySnapPointFromIndex) { return NativeCall<bool, APrimalStructure*, int>(this, "APrimalStructure.IsValidSnapPointFrom(APrimalStructure*,int,int)", ParentStructure, MySnapPointFromIndex); }
     bool IsValidSnapPointTo(APrimalStructure* ChildStructure, int MySnapPointToIndex) { return NativeCall<bool, APrimalStructure*, int>(this, "APrimalStructure.IsValidSnapPointTo(APrimalStructure*,int,int)", ChildStructure, MySnapPointToIndex); }
     void MultiSetPickupAllowedBeforeNetworkTime(long double NewTime) { NativeCall<void, long double>(this, "APrimalStructure.MultiSetPickupAllowedBeforeNetworkTime(double)", NewTime); }
@@ -982,6 +983,10 @@ struct APrimalStructure : APrimalTargetableActor
     AActor* GetBasedOnDinoAsActor(bool bUseReplicatedData, bool bOnlyConsciousDino) { return NativeCall<AActor*, bool, bool>(this, "APrimalStructure.GetBasedOnDinoAsActor(bool,bool)", bUseReplicatedData, bOnlyConsciousDino); }
     TSubclassOf<UPrimalItem> GetConsumesPrimalItem() { return this->GetPrimalStructureSparseClassData()->ConsumesPrimalItemField(); }
     FPrimalStructureSparseClassData* GetPrimalStructureSparseClassData() { return NativeCall<FPrimalStructureSparseClassData*>(this, "APrimalStructure.GetPrimalStructureSparseClassData()"); }
+    FPrimalStructureSparseClassData* GetPrimalStructureSparseClassData(EGetSparseClassDataMethod GetMethod)
+    {
+        return (FPrimalStructureSparseClassData*)this->ClassPrivateField()->GetSparseClassData(GetMethod);
+    }
 };
 
 struct APrimalStructureBearTrap : APrimalStructure

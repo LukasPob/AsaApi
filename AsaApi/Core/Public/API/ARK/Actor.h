@@ -308,12 +308,12 @@ struct UPrimalActor : UObject
 	bool ForceInfiniteDrawDistanceOnComponent(const UPrimitiveComponent* OnComponent) { return NativeCall<bool, const UPrimitiveComponent*>(this, "UPrimalActor.ForceInfiniteDrawDistanceOnComponent(UPrimitiveComponent*)", OnComponent); }
 	void TargetingTeamChanged() { NativeCall<void>(this, "UPrimalActor.TargetingTeamChanged()"); }
 	float OffsetHUDFromCenterScreenY_Implementation() { return NativeCall<float>(this, "UPrimalActor.OffsetHUDFromCenterScreenY_Implementation(AHUD*)"); }
-	bool IsShooterCharacter() { return NativeCall<bool>(this, "UPrimalActor.IsShooterCharacter()"); }
-	bool IsPrimalDino() { return NativeCall<bool>(this, "UPrimalActor.IsPrimalDino()"); }
-	bool IsPrimalCharacter() { return NativeCall<bool>(this, "UPrimalActor.IsPrimalCharacter()"); }
-	bool IsPrimalStructure() { return NativeCall<bool>(this, "UPrimalActor.IsPrimalStructure()"); }
-	//     bool IsPrimalCharacterOrStructure() { return NativeCall<bool>(this, "UPrimalActor.IsPrimalCharacterOrStructure()"); }
-	// FUNCTION MISSING: UPrimalActor.IsPrimalCharacterOrStructure()
+	// Natives removed from the game binary - read the replicated bitfields instead
+	bool IsShooterCharacter() { return bIsShooterCharacter()(); }
+	bool IsPrimalDino() { return bIsPrimalDino()(); }
+	bool IsPrimalCharacter() { return bIsPrimalCharacter()(); }
+	bool IsPrimalStructure() { return bIsPrimalStructure()(); }
+	bool IsPrimalCharacterOrStructure() { return bIsPrimalCharacter()() || bIsPrimalStructure()(); }
 	//     bool IsInstancedFoliage() { return NativeCall<bool>(this, "UPrimalActor.IsInstancedFoliage()"); }
 	// FUNCTION MISSING: UPrimalActor.IsInstancedFoliage()
 	static UClass* GetPrivateStaticClass() { return NativeCall<UClass*>(nullptr, "UPrimalActor.GetPrivateStaticClass()"); }
