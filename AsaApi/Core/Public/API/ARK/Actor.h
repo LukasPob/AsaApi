@@ -151,6 +151,16 @@ struct UDamageType : UObject
 	//void UDamageType(const FObjectInitializer* ObjectInitializer) { NativeCall<void, const FObjectInitializer*>(this, "UDamageType.UDamageType(FObjectInitializer&)", ObjectInitializer); }
 };
 
+struct UPrimalStructureSettings : UObject
+{
+	// Fields
+
+	FName& TierTagField() { return *GetNativePointerField<FName*>(this, "UPrimalStructureSettings.TierTag"); }
+	TArray<FDamageTypeAdjuster, TSizedDefaultAllocator<32> >& BaseDamageTypeAdjustersField() { return *GetNativePointerField<TArray<FDamageTypeAdjuster, TSizedDefaultAllocator<32> >*>(this, "UPrimalStructureSettings.BaseDamageTypeAdjusters"); }
+	TArray<FDamageTypeAdjuster, TSizedDefaultAllocator<32> >& ExtraDamageTypeAdjustersField() { return *GetNativePointerField<TArray<FDamageTypeAdjuster, TSizedDefaultAllocator<32> >*>(this, "UPrimalStructureSettings.ExtraDamageTypeAdjusters"); }
+	float& DecayDestructionPeriodMultiplierField() { return *GetNativePointerField<float*>(this, "UPrimalStructureSettings.DecayDestructionPeriodMultiplier"); }
+};
+
 struct UPrimalActor : UObject
 {
 	// Fields
@@ -3891,7 +3901,8 @@ struct AShooterPlayerController : ABasePlayerController
 	void OnAddedItemsToAllClustersInventory(bool Success, const FString* UserId, const TArray<int, TSizedDefaultAllocator<32> >* MasterIndexNum) { NativeCall<void, bool, const FString*, const TArray<int, TSizedDefaultAllocator<32> >*>(this, "AShooterPlayerController.OnAddedItemsToAllClustersInventory(bool,FString&,TArray<int,TSizedDefaultAllocator<32>>&)", Success, UserId, MasterIndexNum); }
 	char AddItemToAllClustersInventory(FString* UserId, int MasterIndexNum) { return NativeCall<char, FString*, int>(this, "AShooterPlayerController.AddItemToAllClustersInventory(FString,int)", UserId, MasterIndexNum); }
 	UPrimalInventoryComponent* GetPawnInventoryComponent() { return NativeCall<UPrimalInventoryComponent*>(this, "AShooterPlayerController.GetPawnInventoryComponent()"); }
-	//UPrimalInventoryComponent* GetPlayerInventoryComponent() { return NativeCall<UPrimalInventoryComponent*>(this, "AShooterPlayerController.GetPlayerInventoryComponent()"); }
+	// Native renamed to GetPlayerInventory() - keep old name as a shim for existing plugins
+	UPrimalInventoryComponent* GetPlayerInventoryComponent() { return GetPlayerInventory(); }
 	void BeginInactiveState() { NativeCall<void>(this, "AShooterPlayerController.BeginInactiveState()"); }
 	void PawnPendingDestroy(APawn* inPawn) { NativeCall<void, APawn*>(this, "AShooterPlayerController.PawnPendingDestroy(APawn*)", inPawn); }
 	void BeginSpectatingState() { NativeCall<void>(this, "AShooterPlayerController.BeginSpectatingState()"); }
