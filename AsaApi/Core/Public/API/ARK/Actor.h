@@ -318,12 +318,15 @@ struct UPrimalActor : UObject
 	bool ForceInfiniteDrawDistanceOnComponent(const UPrimitiveComponent* OnComponent) { return NativeCall<bool, const UPrimitiveComponent*>(this, "UPrimalActor.ForceInfiniteDrawDistanceOnComponent(UPrimitiveComponent*)", OnComponent); }
 	void TargetingTeamChanged() { NativeCall<void>(this, "UPrimalActor.TargetingTeamChanged()"); }
 	float OffsetHUDFromCenterScreenY_Implementation() { return NativeCall<float>(this, "UPrimalActor.OffsetHUDFromCenterScreenY_Implementation(AHUD*)"); }
-	// Natives removed from the game binary - read the replicated bitfields instead
-	bool IsShooterCharacter() { return bIsShooterCharacter()(); }
-	bool IsPrimalDino() { return bIsPrimalDino()(); }
-	bool IsPrimalCharacter() { return bIsPrimalCharacter()(); }
-	bool IsPrimalStructure() { return bIsPrimalStructure()(); }
-	bool IsPrimalCharacterOrStructure() { return bIsPrimalCharacter()() || bIsPrimalStructure()(); }
+	// The Is* natives AND the UPrimalActor.bIs* bitfields are gone from the game
+	// binary (bitfield reads crash in Offsets::GetBitFieldInternal), so resolve the
+	// target UClass once and walk the class hierarchy - same body as ActorExtensions::IsA.
+	// Raw NativeCall name strings because these classes are defined later in this header.
+	bool IsShooterCharacter() { static UClass* const cls = NativeCall<UClass*>(nullptr, "AShooterCharacter.GetPrivateStaticClass()"); return ClassPrivateField()->IsChildOf(cls); }
+	bool IsPrimalDino() { static UClass* const cls = NativeCall<UClass*>(nullptr, "APrimalDinoCharacter.GetPrivateStaticClass()"); return ClassPrivateField()->IsChildOf(cls); }
+	bool IsPrimalCharacter() { static UClass* const cls = NativeCall<UClass*>(nullptr, "APrimalCharacter.StaticClass()"); return ClassPrivateField()->IsChildOf(cls); }
+	bool IsPrimalStructure() { static UClass* const cls = NativeCall<UClass*>(nullptr, "APrimalStructure.GetPrivateStaticClass()"); return ClassPrivateField()->IsChildOf(cls); }
+	bool IsPrimalCharacterOrStructure() { return IsPrimalCharacter() || IsPrimalStructure(); }
 	//     bool IsInstancedFoliage() { return NativeCall<bool>(this, "UPrimalActor.IsInstancedFoliage()"); }
 	// FUNCTION MISSING: UPrimalActor.IsInstancedFoliage()
 	static UClass* GetPrivateStaticClass() { return NativeCall<UClass*>(nullptr, "UPrimalActor.GetPrivateStaticClass()"); }
