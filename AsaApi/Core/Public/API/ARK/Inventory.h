@@ -855,7 +855,10 @@ struct UPrimalItem : UObject
 	const TArray<TSoftClassPtr<APrimalStructure>, TSizedDefaultAllocator<32> >* GetAllStructuresToBuild() { return NativeCall<const TArray<TSoftClassPtr<APrimalStructure>, TSizedDefaultAllocator<32> >*>(this, "UPrimalItem.GetAllStructuresToBuild()"); }
 	void ConsumeCraftingResources(TArray<FCustomItemData, TSizedDefaultAllocator<32> >* ItemDataOutBuffer, float* ItemDurabilityUsed) { NativeCall<void, TArray<FCustomItemData, TSizedDefaultAllocator<32> >*, float*>(this, "UPrimalItem.ConsumeCraftingResources(TArray<FCustomItemData,TSizedDefaultAllocator<32>>*,float*)", ItemDataOutBuffer, ItemDurabilityUsed); }
 	void ConsumeRepairingResources(float RepairPercent) { NativeCall<void, float>(this, "UPrimalItem.ConsumeRepairingResources(float)", RepairPercent); }
-	FPrimalItemSparseClassData* GetPrimalItemSparseClassData(EGetSparseClassDataMethod GetMethod) { return NativeCall<FPrimalItemSparseClassData*, EGetSparseClassDataMethod>(this, "UPrimalItem.GetPrimalItemSparseClassData(EGetSparseClassDataMethod)", GetMethod); }
+	FPrimalItemSparseClassData* GetPrimalItemSparseClassData(EGetSparseClassDataMethod GetMethod)
+	{
+		return (FPrimalItemSparseClassData*)this->ClassPrivateField()->GetSparseClassData(GetMethod);
+	}
 	bool HasCustomItemData(FName CustomDataName) { return NativeCall<bool, FName>(this, "UPrimalItem.HasCustomItemData(FName)", CustomDataName); }
 };
 
@@ -883,7 +886,7 @@ struct UPrimalInventoryComponent : UActorComponent
 	int& MaxItemCraftQueueEntriesField() { return *GetNativePointerField<int*>(this, "UPrimalInventoryComponent.MaxItemCraftQueueEntries"); }
 	FString& RemoteInventoryDescriptionStringField() { return *GetNativePointerField<FString*>(this, "UPrimalInventoryComponent.RemoteInventoryDescriptionString"); }
 	//TSubclassOf<UPrimalItem>& EngramRequirementClassOverrideField() { return *GetNativePointerField<TSubclassOf<UPrimalItem>*>(this, "UPrimalInventoryComponent.EngramRequirementClassOverride"); }
-	//TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >& RemoteAddItemOnlyAllowItemClassesField() { return *GetNativePointerField<//TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >*>(this, "UPrimalInventoryComponent.RemoteAddItemOnlyAllowItemClasses"); }
+	TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >& RemoteAddItemOnlyAllowItemClassesField() { return *GetNativePointerField<TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >*>(this, "UPrimalInventoryComponent.RemoteAddItemOnlyAllowItemClasses"); }
 	//TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >& RemoteAddItemPreventItemClassesField() { return *GetNativePointerField<//TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >*>(this, "UPrimalInventoryComponent.RemoteAddItemPreventItemClasses"); }
 	TArray<FEventItem, TSizedDefaultAllocator<32> >& EventItemsField() { return *GetNativePointerField<TArray<FEventItem, TSizedDefaultAllocator<32> >*>(this, "UPrimalInventoryComponent.EventItems"); }
 	TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >& DefaultInventoryItemsField() { return *GetNativePointerField<TArray<TSubclassOf<UPrimalItem>, TSizedDefaultAllocator<32> >*>(this, "UPrimalInventoryComponent.DefaultInventoryItems"); }
@@ -1079,6 +1082,7 @@ struct UPrimalInventoryComponent : UActorComponent
 	BitFieldValue<bool, unsigned __int32> bNotNearWirelessCrafting() { return { this, "UPrimalInventoryComponent.bNotNearWirelessCrafting" }; }
 
 	// Functions
+	APrimalStructureItemContainer* BPDropInventoryDeposit_Get(double DestroyAtTime, int OverrideMaxItemsDropped, bool bOverrideDepositLocation, UE::Math::TVector<double> DepositLocationOverride, bool bIgnoreEquippedItems, TSubclassOf<APrimalStructureItemContainer> OverrideInventoryDepositClass) { return NativeCall<APrimalStructureItemContainer*, double, int, bool, UE::Math::TVector<double>, bool, TSubclassOf<APrimalStructureItemContainer>>(this, "UPrimalInventoryComponent.BPDropInventoryDeposit_Get(double,int,bool,UE::Math::TVector<double>,bool,TSubclassOf<APrimalStructureItemContainer>)", DestroyAtTime, OverrideMaxItemsDropped, bOverrideDepositLocation, DepositLocationOverride, bIgnoreEquippedItems, OverrideInventoryDepositClass); }
 
 	bool BPAllowAddInventoryItem(UPrimalItem* Item, int RequestedQuantity, bool bOnlyAddAll) { return NativeCall<bool, UPrimalItem*, int, bool>(this, "UPrimalInventoryComponent.BPAllowAddInventoryItem(UPrimalItem*,int,bool)", Item, RequestedQuantity, bOnlyAddAll); }
 	bool BPCustomRemoteInventoryAllowAddItems(AShooterPlayerController* PC, UPrimalItem* anItem, int anItemQuantityOverride, bool bRequestedByPlayer) { return NativeCall<bool, AShooterPlayerController*, UPrimalItem*, int, bool>(this, "UPrimalInventoryComponent.BPCustomRemoteInventoryAllowAddItems(AShooterPlayerController*,UPrimalItem*,int,bool)", PC, anItem, anItemQuantityOverride, bRequestedByPlayer); }
@@ -1431,6 +1435,7 @@ struct UPrimalCharacterStatusComponent : UActorComponent
 	TArray<float, TSizedDefaultAllocator<32> >& LevelUpStatWeightOverridesField() { return *GetNativePointerField<TArray<float, TSizedDefaultAllocator<32> >*>(this, "UPrimalCharacterStatusComponent.LevelUpStatWeightOverrides"); }
 	float BPGetMaxStatusValue(EPrimalCharacterStatusValue::Type valueType) const { return NativeCall<float, EPrimalCharacterStatusValue::Type>(this, "UPrimalCharacterStatusComponent.BPGetMaxStatusValue(EPrimalCharacterStatusValue::Type)", valueType); }
 	float BPGetCurrentStatusValue(EPrimalCharacterStatusValue::Type valueType) const { return NativeCall<float, EPrimalCharacterStatusValue::Type>(this, "UPrimalCharacterStatusComponent.BPGetCurrentStatusValue(EPrimalCharacterStatusValue::Type)", valueType); }
+	int GetNumLevelUpsAvailable() { return NativeCall<int>(this, "UPrimalCharacterStatusComponent.GetNumLevelUpsAvailable()"); }
 
 	// Bitfields
 

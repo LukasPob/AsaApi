@@ -951,7 +951,7 @@ struct APrimalStructure : APrimalTargetableActor
     void ClearStructureLinks(APlayerController* ForPC) { NativeCall<void, APlayerController*>(this, "APrimalStructure.ClearStructureLinks(APlayerController*)", ForPC); }
     bool CanAttachToExosuit_Implementation(AShooterPlayerController* ForPC) { return NativeCall<bool, AShooterPlayerController*>(this, "APrimalStructure.CanAttachToExosuit_Implementation(AShooterPlayerController*)", ForPC); }
     bool CanBeStoredByExosuit_Implementation(AShooterPlayerController* ForPC) { return NativeCall<bool, AShooterPlayerController*>(this, "APrimalStructure.CanBeStoredByExosuit_Implementation(AShooterPlayerController*)", ForPC); }
-    void PickupStructureAndDependingLinkedStructures(APlayerController* ForPC, bool IsFirstPickup) { NativeCall<void, APlayerController*, bool>(this, "APrimalStructure.PickupStructureAndDependingLinkedStructures(APlayerController*,bool)", ForPC, IsFirstPickup); }
+    void PickupStructureAndDependingLinkedStructures(APlayerController* ForPC, bool IsFirstPickup, UPrimalInventoryComponent* OverrideInventory) { NativeCall<void, APlayerController*, bool, UPrimalInventoryComponent*>(this, "APrimalStructure.PickupStructureAndDependingLinkedStructures(APlayerController*,bool,UPrimalInventoryComponent*)", ForPC, IsFirstPickup, OverrideInventory); }
     //void DemolishStructureAndDependingLinkedStructures(APlayerController* ForPC, TMap<TSubclassOf<UPrimalItem>, int, FDefaultSetAllocator, TDefaultMapHashableKeyFuncs<TSubclassOf<UPrimalItem>, int, 0> >* CollectedResources, bool IsFirst, bool bUseResourceMap) { NativeCall<void, APlayerController*, TMap<TSubclassOf<UPrimalItem>, int, FDefaultSetAllocator, TDefaultMapHashableKeyFuncs<TSubclassOf<UPrimalItem>, int, 0> >*, bool, bool>(this, "APrimalStructure.DemolishStructureAndDependingLinkedStructures(APlayerController*,TMap<TSubclassOf<UPrimalItem>,int,FDefaultSetAllocator,TDefaultMapHashableKeyFuncs<TSubclassOf<UPrimalItem>,int,0>>&,bool,bool)", ForPC, CollectedResources, IsFirst, bUseResourceMap); }
     TArray<APrimalStructure*, TSizedDefaultAllocator<32> >* PreviewCulledStructures(TArray<APrimalStructure*, TSizedDefaultAllocator<32> >* result, TArray<APrimalStructure*, TSizedDefaultAllocator<32> >* InOutStructuresOnFloors) { return NativeCall<TArray<APrimalStructure*, TSizedDefaultAllocator<32> >*, TArray<APrimalStructure*, TSizedDefaultAllocator<32> >*, TArray<APrimalStructure*, TSizedDefaultAllocator<32> >*>(this, "APrimalStructure.PreviewCulledStructures(TArray<APrimalStructure*,TSizedDefaultAllocator<32>>&)", result, InOutStructuresOnFloors); }
     void GatherStructuresPlacedOnFloor(APrimalStructure* ForStructure, TArray<APrimalStructure*, TSizedDefaultAllocator<32> >* StructuresOnFloors) { NativeCall<void, APrimalStructure*, TArray<APrimalStructure*, TSizedDefaultAllocator<32> >*>(this, "APrimalStructure.GatherStructuresPlacedOnFloor(APrimalStructure*,TArray<APrimalStructure*,TSizedDefaultAllocator<32>>&)", ForStructure, StructuresOnFloors); }
@@ -982,7 +982,10 @@ struct APrimalStructure : APrimalTargetableActor
     bool ShouldPerformMeshingCheck(bool bIsFinalPlacement) { return NativeCall<bool, bool>(this, "APrimalStructure.ShouldPerformMeshingCheck(bool)", bIsFinalPlacement); }
     AActor* GetBasedOnDinoAsActor(bool bUseReplicatedData, bool bOnlyConsciousDino) { return NativeCall<AActor*, bool, bool>(this, "APrimalStructure.GetBasedOnDinoAsActor(bool,bool)", bUseReplicatedData, bOnlyConsciousDino); }
     TSubclassOf<UPrimalItem> GetConsumesPrimalItem() { return this->GetPrimalStructureSparseClassData()->ConsumesPrimalItemField(); }
-    FPrimalStructureSparseClassData* GetPrimalStructureSparseClassData() { return NativeCall<FPrimalStructureSparseClassData*>(this, "APrimalStructure.GetPrimalStructureSparseClassData()"); }
+    FPrimalStructureSparseClassData* GetPrimalStructureSparseClassData()
+    {
+        return (FPrimalStructureSparseClassData*)this->ClassPrivateField()->GetSparseClassData(EGetSparseClassDataMethod::CreateIfNull);
+    }
     FPrimalStructureSparseClassData* GetPrimalStructureSparseClassData(EGetSparseClassDataMethod GetMethod)
     {
         return (FPrimalStructureSparseClassData*)this->ClassPrivateField()->GetSparseClassData(GetMethod);
@@ -2771,7 +2774,7 @@ struct APrimalStructureUnderwaterBase : APrimalStructureItemContainer
 
     // Functions
 
-    static UClass* GetPrivateStaticClass() { return NativeCall<UClass*>(nullptr, "APrimalStructureUnderwaterBase.GetPrivateStaticClass()"); }
+    static UClass* GetPrivateStaticClass() { return static_cast<UClass*>(Globals::StaticFindObject(UClass::GetPrivateStaticClass(), nullptr, TEXT("/Script/ShooterGame.PrimalStructureUnderwaterBase"), false)); }
     void SetPortholeState(int index, int NewState) { NativeCall<void, int, int>(this, "APrimalStructureUnderwaterBase.SetPortholeState(int,int)", index, NewState); }
     static void StaticRegisterNativesAPrimalStructureUnderwaterBase() { NativeCall<void>(nullptr, "APrimalStructureUnderwaterBase.StaticRegisterNativesAPrimalStructureUnderwaterBase()"); }
     void ValidateGeneratedRepEnums(const TArray<FRepRecord, TSizedDefaultAllocator<32> >* ClassReps) { NativeCall<void, const TArray<FRepRecord, TSizedDefaultAllocator<32> >*>(this, "APrimalStructureUnderwaterBase.ValidateGeneratedRepEnums(TArray<FRepRecord,TSizedDefaultAllocator<32>>&)", ClassReps); }
