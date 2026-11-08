@@ -22,10 +22,15 @@ namespace API
 		DWORD64 GetAddress(const void* base, const std::string& name);
 		LPVOID GetAddress(const std::string& name);
 
+		bool HasOffset(const std::string& name) const noexcept;
+
 		LPVOID GetDataAddress(const std::string& name);
 
 		BitField GetBitField(const void* base, const std::string& name);
 		BitField GetBitField(LPVOID base, const std::string& name);
+
+		bool HasOffset(const std::string& name) const;
+		bool HasBitField(const std::string& name) const;
 
 	private:
 		Offsets();
