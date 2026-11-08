@@ -514,7 +514,7 @@ struct APrimalBuff : APrimalEmitterSpawnable
     void Destroyed() { NativeCall<void>(this, "APrimalBuff.Destroyed()"); }
     void NetResetBuffStart_Implementation() { NativeCall<void>(this, "APrimalBuff.NetResetBuffStart_Implementation()"); }
     bool ResetBuffStart() { return NativeCall<bool>(this, "APrimalBuff.ResetBuffStart()"); }
-    APrimalBuff* AddBuff(APrimalCharacter* ForCharacter, AActor* DamageCauser) { return NativeCall<APrimalBuff*, APrimalCharacter*, AActor*>(this, "APrimalBuff.AddBuff(APrimalCharacter*,AActor*)", ForCharacter, DamageCauser); }
+    APrimalBuff* AddBuff(APrimalCharacter* ForCharacter, AActor* DamageCauser, TFunction<void __cdecl(APrimalBuff*)>* PreBeginPlay) { return NativeCall<APrimalBuff*, APrimalCharacter*, AActor*, TFunction<void __cdecl(APrimalBuff*)>*>(this, "APrimalBuff.AddBuff(APrimalCharacter*,AActor*,TFunction<void__cdecl(APrimalBuff*))", ForCharacter, DamageCauser, PreBeginPlay); }
     void ServerRequestRelatedMissionData_Implementation() { NativeCall<void>(this, "APrimalBuff.ServerRequestRelatedMissionData_Implementation()"); }
     void ClientReceiveRelatedMissionData_Implementation(AMissionType* InMission, bool InHasRelatedMission) { NativeCall<void, AMissionType*, bool>(this, "APrimalBuff.ClientReceiveRelatedMissionData_Implementation(AMissionType*,bool)", InMission, InHasRelatedMission); }
     void GetHUDElements(APlayerController* ForPC, TArray<FHUDElement, TSizedDefaultAllocator<32> >* OutHUDElements) { NativeCall<void, APlayerController*, TArray<FHUDElement, TSizedDefaultAllocator<32> >*>(this, "APrimalBuff.GetHUDElements(APlayerController*,TArray<FHUDElement,TSizedDefaultAllocator<32>>&)", ForPC, OutHUDElements); }
